@@ -1,6 +1,6 @@
 /* ================================================================
    STUDENT DATA
-   ================================================================ */
+================================================================ */
 const STUDENTS = [
   { roll: "A1",  reg: "I25MA01", name: "PRITHVIRAJ SINGH" },
   { roll: "A4",  reg: "I25MA04", name: "SACHIN SHARMA" },
@@ -37,11 +37,11 @@ const STUDENTS = [
 
 /* ================================================================
    STATE & STORAGE (ATTENDANCE)
-   ================================================================ */
+================================================================ */
 const STORAGE_KEY = "attendanceRegister.present.v1";
 const THEME_KEY   = "attendanceRegister.theme.v1";
 
-STUDENTS.forEach((s, i) => s.id = i);
+STUDENTS.forEach((s, i) => (s.id = i));
 
 let presentIds  = new Set(loadPresent());
 let searchQuery = "";
@@ -50,13 +50,13 @@ let breezeTimer = null;
 
 function scheduleBreezeClear(){
   clearTimeout(breezeTimer);
-  breezeTimer = setTimeout(() => { breezeIds.clear(); }, 800);
+  breezeTimer = setTimeout(() => breezeIds.clear(), 800);
 }
 
-const rosterEl     = document.getElementById("roster");
-const emptyStateEl = document.getElementById("emptyState");
-const searchInput  = document.getElementById("searchInput");
-const toastEl      = document.getElementById("toast");
+const rosterEl       = document.getElementById("roster");
+const emptyStateEl   = document.getElementById("emptyState");
+const searchInput    = document.getElementById("searchInput");
+const toastEl        = document.getElementById("toast");
 const visibleCountEl = document.getElementById("visibleCount");
 
 function loadPresent(){
@@ -72,47 +72,45 @@ function savePresent(){
 
 /* ================================================================
    DATE / TIME
-   ================================================================ */
+================================================================ */
 function formatDate(d){
-  const dd = String(d.getDate()).padStart(2,"0");
-  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const dd   = String(d.getDate()).padStart(2, "0");
+  const mm   = String(d.getMonth() + 1).padStart(2, "0");
   const yyyy = d.getFullYear();
   return `${dd}-${mm}-${yyyy}`;
 }
 function formatTime(d){
   let h = d.getHours();
-  const m = String(d.getMinutes()).padStart(2,"0");
+  const m = String(d.getMinutes()).padStart(2, "0");
   const ampm = h >= 12 ? "PM" : "AM";
-  h = h % 12; if(h === 0) h = 12;
-  return `${String(h).padStart(2,"0")}:${m} ${ampm}`;
+  h = h % 12; if (h === 0) h = 12;
+  return `${String(h).padStart(2, "0")}:${m} ${ampm}`;
 }
 const WEEKDAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 function tickHeaderClock(){
   const now = new Date();
   const label = `${WEEKDAYS[now.getDay()]}, ${formatDate(now)} · ${formatTime(now)}`;
   const el = document.getElementById("todayLabel");
-  if(el) el.textContent = label;
+  if (el) el.textContent = label;
 }
 tickHeaderClock();
 setInterval(tickHeaderClock, 30000);
 
 /* ================================================================
    RENDERING
-   ================================================================ */
+================================================================ */
 function matchesSearch(s){
-  if(!searchQuery) return true;
+  if (!searchQuery) return true;
   const q = searchQuery.toLowerCase();
   return s.name.toLowerCase().includes(q) ||
          s.reg.toLowerCase().includes(q) ||
          s.roll.toLowerCase().includes(q);
 }
-
 function escapeHtml(str){
-  return str.replace(/[&<>"']/g, c => ({
+  return String(str).replace(/[&<>"']/g, c => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[c]));
 }
-
 function renderRoster(){
   const visible = STUDENTS.filter(matchesSearch);
   rosterEl.innerHTML = "";
@@ -121,16 +119,15 @@ function renderRoster(){
 
   const frag = document.createDocumentFragment();
   visible.forEach(s => {
-    const isPresent = presentIds.has(s.id);
+    const isPresent  = presentIds.has(s.id);
     const showBreeze = isPresent && breezeIds.has(s.id);
-
     const row = document.createElement("div");
     row.className = "row" + (isPresent ? " present" : "") + (showBreeze ? " breeze" : "");
     row.dataset.id = s.id;
-    row.setAttribute("role","button");
+    row.setAttribute("role", "button");
     row.tabIndex = 0;
     row.innerHTML = `
-      <input type="checkbox" ${isPresent ? "checked" : ""} aria-label="Mark ${escapeHtml(s.name)} present">
+      <input type="checkbox" ${isPresent ? "checked" : ""} aria-label="Mark ${escapeHtml(s.name)} present" tabindex="-1">
       <span class="roll">${escapeHtml(s.roll)}</span>
       <span class="info">
         <div class="name">${escapeHtml(s.name)}</div>
@@ -143,24 +140,22 @@ function renderRoster(){
   rosterEl.appendChild(frag);
   updateStats();
 }
-
 function updateStats(){
-  const total = STUDENTS.length;
+  const total   = STUDENTS.length;
   const present = presentIds.size;
-  document.getElementById("statTotal").textContent = total;
+  document.getElementById("statTotal").textContent   = total;
   document.getElementById("statPresent").textContent = present;
-  document.getElementById("statAbsent").textContent = total - present;
+  document.getElementById("statAbsent").textContent  = total - present;
   const pct = total ? Math.round((present / total) * 100) : 0;
   document.getElementById("progressFill").style.width = pct + "%";
-  document.getElementById("progressPct").textContent = pct + "%";
+  document.getElementById("progressPct").textContent  = pct + "%";
 }
 
 /* ================================================================
-   EVENT HANDLERS
-   ================================================================ */
+   EVENT HANDLERS (ATTENDANCE)
+================================================================ */
 function toggleStudent(id){
-  const wasPresent = presentIds.has(id);
-  if(wasPresent){
+  if (presentIds.has(id)){
     presentIds.delete(id);
     breezeIds.delete(id);
   } else {
@@ -171,29 +166,25 @@ function toggleStudent(id){
   scheduleBreezeClear();
   renderRoster();
 }
-
-rosterEl.addEventListener("click", (e) => {
+rosterEl.addEventListener("click", e => {
   const row = e.target.closest(".row");
-  if(!row) return;
+  if (!row) return;
   toggleStudent(Number(row.dataset.id));
 });
-
-rosterEl.addEventListener("keydown", (e) => {
-  if(e.key !== "Enter" && e.key !== " ") return;
+rosterEl.addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
   const row = e.target.closest(".row");
-  if(!row) return;
+  if (!row) return;
   e.preventDefault();
   toggleStudent(Number(row.dataset.id));
 });
-
-searchInput.addEventListener("input", (e) => {
+searchInput.addEventListener("input", e => {
   searchQuery = e.target.value.trim();
   renderRoster();
 });
-
 document.getElementById("selectAllBtn").addEventListener("click", () => {
   STUDENTS.filter(matchesSearch).forEach(s => {
-    if(!presentIds.has(s.id)) breezeIds.add(s.id);
+    if (!presentIds.has(s.id)) breezeIds.add(s.id);
     presentIds.add(s.id);
   });
   savePresent();
@@ -201,7 +192,6 @@ document.getElementById("selectAllBtn").addEventListener("click", () => {
   renderRoster();
   showToast("All visible students marked present");
 });
-
 document.getElementById("clearAllBtn").addEventListener("click", () => {
   presentIds.clear();
   breezeIds.clear();
@@ -220,7 +210,7 @@ function showToast(msg){
 
 /* ================================================================
    THEME
-   ================================================================ */
+================================================================ */
 function applyTheme(theme){
   document.documentElement.setAttribute("data-theme", theme);
   document.getElementById("themeToggle").textContent = theme === "dark" ? "☀️" : "🌙";
@@ -239,7 +229,7 @@ document.getElementById("themeToggle").addEventListener("click", () => {
 
 /* ================================================================
    SUBMIT / COPY / EXPORT / PRINT
-   ================================================================ */
+================================================================ */
 const outputPanel = document.getElementById("outputPanel");
 const outputText  = document.getElementById("outputText");
 const submitHint  = document.querySelector(".submit-bar .hint");
@@ -265,29 +255,28 @@ async function submitAttendance(){
   lastSubmission = buildSubmissionText(now, presentStudents);
   renderOutput(lastSubmission);
   outputPanel.classList.add("show");
-  outputPanel.scrollIntoView({ behavior:"smooth", block:"nearest" });
+  outputPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
   const copied = await copyToClipboard(lastSubmission.clip);
   showToast(copied ? "Attendance copied — date & time included ✅" : "Copy failed — copy manually below.");
-  if(submitHint){
+  if (submitHint){
     submitHint.innerHTML = `Last submitted <kbd>${lastSubmission.timeStr}</kbd> · ${lastSubmission.count} present`;
     submitHint.classList.add("done");
   }
 }
 
-function launchConfetti() {
+function launchConfetti(){
   const colors = ['#16834f', '#22a967', '#2563eb', '#c15d13', '#4dcc87', '#f09a59'];
   const container = document.createElement('div');
   container.className = 'confetti-container';
   document.body.appendChild(container);
-  const pieceCount = 90;
-  for (let i = 0; i < pieceCount; i++) {
+  for (let i = 0; i < 90; i++){
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
     piece.style.left = Math.random() * 100 + 'vw';
     piece.style.background = colors[Math.floor(Math.random() * colors.length)];
     piece.style.animationDuration = 2.2 + Math.random() * 1.3 + 's';
     piece.style.animationDelay = Math.random() * 0.3 + 's';
-    piece.style.width = 6 + Math.random() * 6 + 'px';
+    piece.style.width  = 6 + Math.random() * 6 + 'px';
     piece.style.height = 10 + Math.random() * 8 + 'px';
     piece.style.transform = `rotate(${Math.random() * 360}deg)`;
     container.appendChild(piece);
@@ -301,8 +290,8 @@ document.getElementById("submitBtn").addEventListener("click", () => {
 });
 
 function renderOutput(sub){
-  document.getElementById("metaDate").textContent = sub.dateStr;
-  document.getElementById("metaTime").textContent = sub.timeStr;
+  document.getElementById("metaDate").textContent  = sub.dateStr;
+  document.getElementById("metaTime").textContent  = sub.timeStr;
   document.getElementById("metaCount").textContent = `${sub.count} / ${STUDENTS.length}`;
   outputText.textContent = sub.clip;
 }
@@ -311,7 +300,7 @@ async function copyToClipboard(text){
   try {
     await navigator.clipboard.writeText(text);
     return true;
-  } catch(e) {
+  } catch(e){
     try {
       const ta = document.createElement("textarea");
       ta.value = text;
@@ -327,28 +316,26 @@ async function copyToClipboard(text){
 }
 
 document.getElementById("copyAgainBtn").addEventListener("click", async () => {
-  if(!lastSubmission) return;
+  if (!lastSubmission) return;
   const copied = await copyToClipboard(lastSubmission.clip);
   showToast(copied ? "Copied again ✅" : "Copy failed");
 });
-
 document.getElementById("exportBtn").addEventListener("click", () => {
-  if(!lastSubmission) return;
-  const blob = new Blob([lastSubmission.clip], { type:"text/plain" });
-  const url = URL.createObjectURL(blob);
+  if (!lastSubmission) return;
+  const blob = new Blob([lastSubmission.clip], { type: "text/plain" });
+  const url  = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `attendance-${lastSubmission.dateStr}-${lastSubmission.timeStr.replace(/[: ]/g,"")}.txt`;
+  a.download = `attendance-${lastSubmission.dateStr}-${lastSubmission.timeStr.replace(/[: ]/g, "")}.txt`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 });
-
 document.getElementById("printBtn").addEventListener("click", () => window.print());
 
-document.addEventListener("keydown", (e) => {
-  if((e.ctrlKey || e.metaKey) && e.key === "Enter"){
+document.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === "Enter"){
     e.preventDefault();
     launchConfetti();
     submitAttendance();
@@ -356,419 +343,175 @@ document.addEventListener("keydown", (e) => {
 });
 
 /* ================================================================
-   CGPA TRACKER LOGIC
-   ================================================================ */
-const curriculum = {
-    1: { subjects: [{ name: 'Foundation Course in Mathematics-I', code: 'MA101', credits: 4 }, { name: 'Calculus-I', code: 'MA103', credits: 4 }, { name: 'Computer Programming using C/C++', code: 'MA131', credits: 4 }, { name: 'English and Professional Communication', code: 'HS110', credits: 4 }, { name: 'Fundamentals of Physics', code: 'PH113', credits: 4 }] },
-    2: { subjects: [{ name: 'Foundation Course in Mathematics-II', code: 'MA102', credits: 4 }, { name: 'Calculus-II', code: 'MA104', credits: 4 }, { name: 'Python Programming', code: 'MA132', credits: 4 }, { name: 'Fundamentals of Physics-II', code: 'PH106', credits: 4 }, { name: 'Chemistry', code: 'CY112', credits: 4 }, { name: 'Indian Value System and Social Consciousness', code: 'HS120', credits: 2 }] },
-    3: { subjects: [{ name: 'Element of Analysis', code: 'MA201', credits: 4 }, { name: 'Analytical Geometry', code: 'MA203', credits: 4 }, { name: 'Discrete Mathematical Structure', code: 'MA205', credits: 4 }, { name: 'Data Structure', code: 'MA231', credits: 4 }, { name: 'English and Professional Communication-II', code: 'HS201', credits: 4 }] },
-    4: { subjects: [{ name: 'Numerical Analysis', code: 'MA202', credits: 4 }, { name: 'Linear Algebra', code: 'MA204', credits: 4 }, { name: 'Elementary Number Theory', code: 'MA232', credits: 4 }, { name: 'Computational Life Science', code: 'MA233', credits: 4 }, { name: 'Computer Networks', code: 'CS208', credits: 4 }] },
-    5: { subjects: [{ name: 'Ordinary Differential Equations', code: 'MA301', credits: 4 }, { name: 'Mechanics', code: 'MA303', credits: 4 }, { name: 'Probability and Statistics-I', code: 'MA331', credits: 4 }, { name: 'Analysis of Algorithms', code: 'MA332', credits: 4 }, { name: 'Elective', code: 'MA3AA', credits: 4, isElective: true }] },
-    6: { subjects: [{ name: 'Complex Analysis', code: 'MA302', credits: 4 }, { name: 'Continuum Mechanics', code: 'MA304', credits: 4 }, { name: 'Metric Space', code: 'MA333', credits: 4 }, { name: 'Fundamentals of Artificial Intelligence', code: 'CS300', credits: 4 }, { name: 'Elective', code: 'MA3BB', credits: 4, isElective: true }] },
-    7: { subjects: [{ name: 'Topology', code: 'MA401', credits: 4 }, { name: 'Abstract Algebra', code: 'MA403', credits: 4 }, { name: 'Fluid Dynamics', code: 'MA405', credits: 4 }, { name: 'Optimization Techniques', code: 'MA431', credits: 4 }, { name: 'Elective', code: 'MA4AA', credits: 4, isElective: true }] },
-    8: { subjects: [{ name: 'Functional Analysis', code: 'MA402', credits: 4 }, { name: 'Higher Transcendental Functions', code: 'MA404', credits: 4 }, { name: 'Partial Differential Equations', code: 'MA406', credits: 4 }, { name: 'Calculus of Variations & Integral Equations', code: 'MA432', credits: 4 }, { name: 'Elective', code: 'MA4CC', credits: 4, isElective: true }] },
-    9: { subjects: [{ name: 'Measure Theory and Integration', code: 'MA501', credits: 4 }, { name: 'Advanced Mathematical Modelling and Simulation', code: 'MA503', credits: 4 }, { name: 'Probability and Statistics-II', code: 'MA531', credits: 4 }, { name: 'Communication and Technical Writing Skill', code: 'HS501', credits: 4 }, { name: 'Elective', code: 'MA5AA', credits: 4, isElective: true }] },
-    10: { subjects: [{ name: 'Dissertation', code: 'MAP10', credits: 20 }] }
+   SIMPLE CGPA TARGET CALCULATOR
+   10 semesters · equal weight per semester
+   Required Avg SGPA = (Target × 10 − Current × Passed) ÷ Remaining
+================================================================ */
+const TOTAL_SEMS = 10;
+const CGPA_KEY   = "attendanceRegister.cgpaSimple.v1";
+
+const cgpaModal   = document.getElementById("cgpaModal");
+const cgpaCurrent = document.getElementById("cgpaCurrent");
+const cgpaSems    = document.getElementById("cgpaSemesters");
+const cgpaTarget  = document.getElementById("cgpaTarget");
+
+const cgpaEls = {
+  heroBox:  document.getElementById("cgpaHero"),
+  heroNum:  document.getElementById("cgpaRequired"),
+  heroLbl:  document.getElementById("cgpaRequiredLbl"),
+  current:  document.getElementById("cCurrent"),
+  target:   document.getElementById("cTarget"),
+  done:     document.getElementById("cCompleted"),
+  left:     document.getElementById("cRemaining"),
+  status:   document.getElementById("cgpaStatus"),
+  sentence: document.getElementById("cgpaSentence"),
+  iTarget:  document.getElementById("iTarget"),
+  iNeed:    document.getElementById("iNeed"),
+  iMargin:  document.getElementById("iMargin")
 };
 
-const electives = [
-    { name: 'Advance Mathematical Methods-I', code: 'MA351' }, { name: 'Stochastic Differential Equations', code: 'MA352' },
-    { name: 'Mathematical Modelling', code: 'MA353' }, { name: 'Integral and Wavelet Transform', code: 'MA354' },
-    { name: 'Mathematical Finance', code: 'MA355' }, { name: 'Fuzzy Set Theory', code: 'MA356' },
-    { name: 'Block Chain Technology', code: 'CS360' }, { name: 'Sobolev Space', code: 'MA451' },
-    { name: 'Advance Mathematical Methods-II', code: 'MA452' }, { name: 'Natural Language Processing', code: 'CS461' },
-    { name: 'Data Analytics', code: 'MA453' }, { name: 'Multi Objective Optimization', code: 'MA454' },
-    { name: 'Evolutionary Algorithms', code: 'MA455' }, { name: 'Advance Operations Research', code: 'MA551' },
-    { name: 'Fluid Dynamics in Porous Media', code: 'MA552' }, { name: 'Advanced Numerical Analysis', code: 'MA553' },
-    { name: 'Linear Operator and Approximation Theory', code: 'MA554' }
-];
-
-const gradeSystem = { 'O': 10, 'A+': 9, 'A': 8, 'B+': 7, 'B': 6, 'C': 5, 'D': 4, 'F': 0 };
-
-let cgpaData = { grades: {}, electives: {}, target: 0 };
-const CGPA_STORAGE_KEY = 'attendanceRegister.cgpa.v1';
-
-function loadCGPAData() {
-    const saved = localStorage.getItem(CGPA_STORAGE_KEY);
-    if (saved) cgpaData = JSON.parse(saved);
+/* ---- persisted state ---- */
+const cgpaState = { current: "", sems: "4", target: "" };
+try {
+  const raw = localStorage.getItem(CGPA_KEY);
+  if (raw) Object.assign(cgpaState, JSON.parse(raw));
+} catch(e){}
+function saveCgpaState(){
+  try { localStorage.setItem(CGPA_KEY, JSON.stringify(cgpaState)); } catch(e){}
 }
 
-function saveCGPAData() {
-    localStorage.setItem(CGPA_STORAGE_KEY, JSON.stringify(cgpaData));
+/* ---- helpers ---- */
+const toNum  = v => { const n = parseFloat(v); return isFinite(n) ? n : null; };
+const clamp  = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
+const fx     = n => (n == null || !isFinite(n) ? "—" : n.toFixed(2));
+const setText = (el, t) => { el.textContent = t; };
+
+let lastHeroText = "";
+function paintHero(text, tone, label){
+  setText(cgpaEls.heroNum, text);
+  setText(cgpaEls.heroLbl, label);
+  cgpaEls.heroBox.className = "cgpa-hero " + tone;
+  if (text !== lastHeroText){
+    cgpaEls.heroNum.classList.remove("pop");
+    void cgpaEls.heroNum.offsetWidth;           /* restart animation */
+    cgpaEls.heroNum.classList.add("pop");
+    lastHeroText = text;
+  }
+}
+function paintStatus(tone, text){
+  cgpaEls.status.className = "cgpa-status " + tone;
+  setText(cgpaEls.status, text);
+}
+function difficultyFor(req){
+  if (req <= 7)  return ["tone-green", "Comfortable target — you have a good margin."];
+  if (req <= 8)  return ["tone-blue",  "Achievable target — consistent performance should be enough."];
+  if (req <= 9)  return ["tone-amber", "Challenging target — you'll need strong and consistent semesters."];
+  if (req <= 10) return ["tone-amber", "Very challenging target — you'll need excellent performance."];
+  return ["tone-red", "Target is mathematically impossible because the maximum SGPA is 10."];
 }
 
-// Modal Handlers
-const cgpaModal = document.getElementById('cgpaModal');
-document.getElementById('cgpaToggleBtn').addEventListener('click', () => {
-    loadCGPAData();
-    renderCGPA();
-    initSimpleCGPACalculator();
-    cgpaModal.classList.add('active');
-});
-document.getElementById('closeCgpaBtn').addEventListener('click', () => cgpaModal.classList.remove('active'));
-cgpaModal.addEventListener('click', (e) => { if(e.target === cgpaModal) cgpaModal.classList.remove('active'); });
+/* ---- live calculation ---- */
+function calcCGPA(){
+  const cRaw = toNum(cgpaCurrent.value);
+  const tRaw = toNum(cgpaTarget.value);
+  const current = cRaw == null ? null : clamp(cRaw, 0, 10);
+  const target  = tRaw == null ? null : clamp(tRaw, 0, 10);
+  const passed  = clamp(parseInt(cgpaSems.value, 10) || 0, 0, TOTAL_SEMS);
+  const remaining = TOTAL_SEMS - passed;
 
-/* ================================================================
-   SIMPLE CGPA CALCULATOR
-   ================================================================ */
-function initSimpleCGPACalculator() {
-    const currentInput = document.getElementById('simpleCurrentCGPA');
-    const semestersSelect = document.getElementById('simpleSemestersPassed');
-    const targetInput = document.getElementById('simpleTargetCGPA');
-    
-    // Load saved values if any
-    const saved = loadSimpleCGPAData();
-    if (saved.current !== null) currentInput.value = saved.current;
-    semestersSelect.value = saved.semesters;
-    if (saved.target !== null) targetInput.value = saved.target;
-    
-    // Calculate on input change
-    const calculate = () => {
-        saveSimpleCGPAData();
-        performSimpleCalculation();
-    };
-    
-    currentInput.addEventListener('input', calculate);
-    semestersSelect.addEventListener('change', calculate);
-    targetInput.addEventListener('input', calculate);
-    
-    // Initial calculation
-    performSimpleCalculation();
+  /* analysis chips */
+  setText(cgpaEls.current, fx(current));
+  setText(cgpaEls.target,  fx(target));
+  setText(cgpaEls.done,    `${passed} / ${TOTAL_SEMS}`);
+  setText(cgpaEls.left,    remaining === 0 ? "None" : `${remaining} sem${remaining === 1 ? "" : "s"}`);
+  setText(cgpaEls.iTarget, fx(target));
+
+  /* missing input */
+  if (current == null || target == null){
+    paintHero("—", "tone-neutral", "Required average SGPA");
+    paintStatus("tone-neutral", "Enter your CGPA details to see the plan.");
+    setText(cgpaEls.sentence, "Fill in your current CGPA and target CGPA — the result updates live.");
+    setText(cgpaEls.iNeed, "—");
+    setText(cgpaEls.iMargin, "—");
+    return;
+  }
+
+  /* target already met */
+  if (current >= target){
+    paintHero("✓", "tone-green", "Target already achieved");
+    paintStatus("tone-green", "Target already achieved ✓");
+    setText(cgpaEls.sentence,
+      `Your current CGPA of ${fx(current)} already meets your target of ${fx(target)}. Nice work ✓`);
+    setText(cgpaEls.iNeed, "Nothing more");
+    setText(cgpaEls.iMargin, `+${fx(current - target)} above target`);
+    return;
+  }
+
+  /* no semesters left */
+  if (remaining === 0){
+    paintHero("—", "tone-neutral", "No semesters remaining");
+    paintStatus("tone-amber", "All semesters completed.");
+    setText(cgpaEls.sentence, "Target cannot be changed because all semesters are completed.");
+    setText(cgpaEls.iNeed, "—");
+    setText(cgpaEls.iMargin, "—");
+    return;
+  }
+
+  /* main formula */
+  const required = (target * TOTAL_SEMS - current * passed) / remaining;
+  const margin   = required - target;
+  const [tone, msg] = difficultyFor(required);
+
+  paintHero(fx(required), tone, "Required average SGPA");
+  paintStatus(tone, msg);
+  setText(cgpaEls.sentence,
+    required > 10
+      ? `To reach ${fx(target)} CGPA you would need an average SGPA of ${fx(required)} — above the maximum of 10.`
+      : `To reach ${fx(target)} CGPA, you need to maintain an average SGPA of ${fx(required)} over your remaining ${remaining} semester${remaining === 1 ? "" : "s"}.`);
+  setText(cgpaEls.iNeed, `${fx(required)} average`);
+  setText(cgpaEls.iMargin, `${margin >= 0 ? "+" : ""}${fx(margin)} above target`);
 }
 
-const SIMPLE_CGPA_KEY = 'simpleCGPACalculator.v1';
-
-function loadSimpleCGPAData() {
-    try {
-        const raw = localStorage.getItem(SIMPLE_CGPA_KEY);
-        return raw ? JSON.parse(raw) : { current: '', semesters: 4, target: '' };
-    } catch(e) { return { current: '', semesters: 4, target: '' }; }
+/* ---- input events (live) ---- */
+function onCgpaInput(){
+  cgpaState.current = cgpaCurrent.value;
+  cgpaState.target  = cgpaTarget.value;
+  saveCgpaState();
+  calcCGPA();
 }
-
-function saveSimpleCGPAData() {
-    const data = {
-        current: document.getElementById('simpleCurrentCGPA').value,
-        semesters: document.getElementById('simpleSemestersPassed').value,
-        target: document.getElementById('simpleTargetCGPA').value
-    };
-    try { localStorage.setItem(SIMPLE_CGPA_KEY, JSON.stringify(data)); } catch(e) {}
-}
-
-function performSimpleCalculation() {
-    const currentCGPA = parseFloat(document.getElementById('simpleCurrentCGPA').value) || 0;
-    const semestersPassed = parseInt(document.getElementById('simpleSemestersPassed').value) || 0;
-    const targetCGPA = parseFloat(document.getElementById('simpleTargetCGPA').value) || 0;
-    
-    const resultSection = document.getElementById('cgpaResultSection');
-    const messageDiv = document.getElementById('cgpaMessage');
-    
-    // Validation
-    if (semestersPassed === 10) {
-        resultSection.style.display = 'none';
-        messageDiv.style.display = 'block';
-        if (targetCGPA > currentCGPA) {
-            messageDiv.textContent = 'Target cannot be changed because all semesters are completed.';
-        } else {
-            messageDiv.textContent = 'All semesters completed.';
-        }
-        return;
-    }
-    
-    // Hide message, show results
-    messageDiv.style.display = 'none';
-    resultSection.style.display = (currentCGPA > 0 || targetCGPA > 0) ? 'flex' : 'none';
-    
-    const remainingSemesters = 10 - semestersPassed;
-    
-    // Formula: (Target × 10 - Current × Passed) / Remaining
-    const numerator = (targetCGPA * 10) - (currentCGPA * semestersPassed);
-    let requiredAverage = numerator / remainingSemesters;
-    
-    // Handle edge cases
-    if (!isFinite(requiredAverage) || isNaN(requiredAverage)) {
-        requiredAverage = 0;
-    }
-    
-    // Update main result
-    document.getElementById('requiredAverageSGPA').textContent = requiredAverage.toFixed(2);
-    
-    // Update analysis
-    document.getElementById('analysisCurrentCGPA').textContent = currentCGPA.toFixed(2);
-    document.getElementById('analysisTargetCGPA').textContent = targetCGPA.toFixed(2);
-    document.getElementById('analysisSemestersCompleted').textContent = `${semestersPassed} / 10`;
-    document.getElementById('analysisRemaining').textContent = `${remainingSemesters} semester${remainingSemesters === 1 ? '' : 's'}`;
-    
-    // Status text
-    const statusEl = document.getElementById('cgpaStatusText');
-    if (currentCGPA >= targetCGPA && targetCGPA > 0) {
-        statusEl.textContent = 'Target already achieved ✓';
-        statusEl.style.color = 'var(--green)';
-    } else if (requiredAverage > 10) {
-        statusEl.textContent = 'Target is mathematically impossible because the maximum SGPA is 10.';
-        statusEl.style.color = 'var(--amber)';
-    } else if (requiredAverage <= 7.0) {
-        statusEl.textContent = 'Comfortable target — you have a good margin.';
-        statusEl.style.color = 'var(--green)';
-    } else if (requiredAverage <= 8.0) {
-        statusEl.textContent = 'Achievable target — consistent performance should be enough.';
-        statusEl.style.color = 'var(--ink-soft)';
-    } else if (requiredAverage <= 9.0) {
-        statusEl.textContent = 'Challenging target — you\'ll need strong and consistent semesters.';
-        statusEl.style.color = 'var(--amber)';
-    } else if (requiredAverage <= 10.0) {
-        statusEl.textContent = 'Very challenging target — you\'ll need excellent performance.';
-        statusEl.style.color = 'var(--amber)';
-    } else {
-        statusEl.textContent = '';
-    }
-    
-    // Quick insight
-    const margin = requiredAverage - targetCGPA;
-    document.getElementById('insightTarget').textContent = targetCGPA.toFixed(2);
-    document.getElementById('insightNeed').textContent = requiredAverage.toFixed(2) + ' average';
-    
-    const marginEl = document.getElementById('insightMargin');
-    if (margin >= 0) {
-        marginEl.textContent = '+' + margin.toFixed(2) + ' above target';
-        marginEl.style.color = margin > 2 ? 'var(--amber)' : 'var(--green)';
-    } else {
-        marginEl.textContent = margin.toFixed(2) + ' below target';
-        marginEl.style.color = 'var(--green)';
-    }
-}
-
-function renderCGPA() {
-    renderSemesters();
-    renderWhatIf();
-    calculateCGPA();
-    document.getElementById('targetCGPA').value = cgpaData.target || '';
-    calculateTarget();
-}
-
-function renderSemesters() {
-    const container = document.getElementById('semestersContainer');
-    container.innerHTML = '';
-
-    for (let sem = 1; sem <= 10; sem++) {
-        const semData = curriculum[sem];
-        const totalCredits = semData.subjects.reduce((sum, s) => sum + s.credits, 0);
-        
-        const card = document.createElement('div');
-        card.className = 'sem-card';
-        card.innerHTML = `
-            <div class="sem-header" onclick="this.nextElementSibling.classList.toggle('active')">
-                <div class="sem-title">Semester ${sem}</div>
-                <div class="sem-meta">${totalCredits} Credits</div>
-            </div>
-            <div class="sem-body" id="sem${sem}Body">
-                ${semData.subjects.map((subject, idx) => renderSubjectRow(sem, idx, subject)).join('')}
-                <div class="sgpa-display">
-                    <div class="sgpa-val" id="sgpa${sem}">0.00</div>
-                    <div class="sgpa-lbl">Semester GPA</div>
-                </div>
-            </div>
-        `;
-        container.appendChild(card);
-    }
-}
-
-function renderSubjectRow(sem, idx, subject) {
-    const key = `${sem}_${idx}`;
-    const grade = cgpaData.grades[key] || '';
-    
-    let electiveSelect = '';
-    if (subject.isElective) {
-        const selectedElective = cgpaData.electives[key] || '';
-        electiveSelect = `
-            <select class="cgpa-select" onchange="window.selectElective(${sem}, ${idx}, this.value)" style="max-width: 130px; font-weight: normal;">
-                <option value="">Elective...</option>
-                ${electives.map(e => `<option value="${e.code}" ${selectedElective === e.code ? 'selected' : ''}>${e.code}</option>`).join('')}
-            </select>
-        `;
-    }
-
-    return `
-        <div class="subj-row">
-            <div class="subj-info">
-                <div class="subj-name">${subject.name}</div>
-                <div class="subj-code">${subject.code} • ${subject.credits} Credits</div>
-            </div>
-            <div class="subj-selects">
-                ${electiveSelect}
-                <select class="cgpa-select" onchange="window.updateGrade(${sem}, ${idx}, this.value)">
-                    <option value="">Grade</option>
-                    ${Object.entries(gradeSystem).map(([g, p]) => `<option value="${g}" ${grade === g ? 'selected' : ''}>${g} (${p})</option>`).join('')}
-                </select>
-            </div>
-        </div>
-    `;
-}
-
-window.updateGrade = function(sem, idx, grade) {
-    const key = `${sem}_${idx}`;
-    if (grade) cgpaData.grades[key] = grade;
-    else delete cgpaData.grades[key];
-    saveCGPAData();
-    calculateCGPA();
-};
-
-window.selectElective = function(sem, idx, code) {
-    const key = `${sem}_${idx}`;
-    if (code) cgpaData.electives[key] = code;
-    else delete cgpaData.electives[key];
-    saveCGPAData();
-};
-
-function calculateCGPA() {
-    let totalGradePoints = 0;
-    let totalCredits = 0;
-    let completedSemesters = 0;
-
-    for (let sem = 1; sem <= 10; sem++) {
-        const semData = curriculum[sem];
-        let semGradePoints = 0;
-        let semCredits = 0;
-        let allGraded = true;
-
-        semData.subjects.forEach((subject, idx) => {
-            const key = `${sem}_${idx}`;
-            const grade = cgpaData.grades[key];
-            
-            if (grade) {
-                const points = gradeSystem[grade];
-                semGradePoints += points * subject.credits;
-                semCredits += subject.credits;
-            } else {
-                allGraded = false;
-            }
-        });
-
-        if (semCredits > 0) {
-            const sgpa = semGradePoints / semCredits;
-            document.getElementById(`sgpa${sem}`).textContent = sgpa.toFixed(2);
-            totalGradePoints += semGradePoints;
-            totalCredits += semCredits;
-            if (allGraded) completedSemesters++;
-        } else {
-            document.getElementById(`sgpa${sem}`).textContent = '0.00';
-        }
-    }
-
-    const cgpa = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
-    document.getElementById('currentCGPA').textContent = cgpa.toFixed(2);
-    document.getElementById('totalCredits').textContent = totalCredits;
-    document.getElementById('semestersCompleted').textContent = `${completedSemesters}/10`;
-    calculateTarget();
-}
-
-// Target Logic
-document.getElementById('targetCGPA').addEventListener('input', (e) => {
-    cgpaData.target = parseFloat(e.target.value);
-    saveCGPAData();
-    calculateTarget();
+cgpaCurrent.addEventListener("input", onCgpaInput);
+cgpaTarget.addEventListener("input", onCgpaInput);
+cgpaSems.addEventListener("change", () => {
+  cgpaState.sems = cgpaSems.value;
+  saveCgpaState();
+  calcCGPA();
 });
 
-function calculateTarget() {
-    const target = cgpaData.target;
-    const result = document.getElementById('targetResult');
-    
-    if (!target || target <= 0) {
-        result.classList.remove('show');
-        return;
-    }
-    result.classList.add('show');
-
-    let totalGradePoints = 0, totalCredits = 0, remainingCredits = 0;
-    for (let sem = 1; sem <= 10; sem++) {
-        curriculum[sem].subjects.forEach((subj, idx) => {
-            const grade = cgpaData.grades[`${sem}_${idx}`];
-            if (grade) {
-                totalGradePoints += gradeSystem[grade] * subj.credits;
-                totalCredits += subj.credits;
-            } else {
-                remainingCredits += subj.credits;
-            }
-        });
-    }
-
-    const currentCGPA = totalCredits > 0 ? totalGradePoints / totalCredits : 0;
-    
-    if (currentCGPA >= target && remainingCredits === 0) {
-        result.innerHTML = `<span style="color: var(--green)">✓ Target achieved!</span>`;
-        result.style.background = 'var(--green-tint)';
-    } else if (remainingCredits === 0) {
-        result.innerHTML = `<span style="color: var(--amber)">Target missed. No remaining credits.</span>`;
-        result.style.background = 'var(--amber-tint)';
-    } else {
-        const requiredPoints = (target * (totalCredits + remainingCredits)) - totalGradePoints;
-        const requiredAverage = requiredPoints / remainingCredits;
-        
-        if (requiredAverage > 10) {
-            result.innerHTML = `<span style="color: var(--amber)">Not achievable. Required average: ${requiredAverage.toFixed(2)} (max 10)</span>`;
-            result.style.background = 'var(--amber-tint)';
-        } else {
-            result.innerHTML = `To achieve <strong>${target.toFixed(2)}</strong> overall, you need an average of <strong>${requiredAverage.toFixed(2)}</strong> in your remaining ${remainingCredits} credits.`;
-            result.style.background = 'var(--paper-card)';
-        }
-    }
-}
-
-// What-If Calculator
-function renderWhatIf() {
-    const container = document.getElementById('whatifContainer');
-    container.innerHTML = '';
-    for (let sem = 5; sem <= 10; sem++) {
-        container.innerHTML += `
-            <div class="whatif-item">
-                <label>Sem ${sem}</label>
-                <input type="number" placeholder="SGPA" step="0.01" min="0" max="10" id="whatif${sem}" oninput="calculateWhatIf()">
-            </div>
-        `;
-    }
-}
-
-window.calculateWhatIf = function() {
-    let totalGradePoints = 0, totalCredits = 0;
-    for (let sem = 1; sem <= 10; sem++) {
-        curriculum[sem].subjects.forEach((subj, idx) => {
-            const grade = cgpaData.grades[`${sem}_${idx}`];
-            if (grade) {
-                totalGradePoints += gradeSystem[grade] * subj.credits;
-                totalCredits += subj.credits;
-            }
-        });
-    }
-
-    let projectedPoints = 0, projectedCredits = 0;
-    for (let sem = 5; sem <= 10; sem++) {
-        const input = document.getElementById(`whatif${sem}`);
-        const sgpa = parseFloat(input.value);
-        if (sgpa && sgpa > 0) {
-            const semCredits = curriculum[sem].subjects.reduce((sum, s) => sum + s.credits, 0);
-            projectedPoints += sgpa * semCredits;
-            projectedCredits += semCredits;
-        }
-    }
-
-    const result = document.getElementById('whatifResult');
-    if (projectedCredits > 0) {
-        const projectedCGPA = (totalGradePoints + projectedPoints) / (totalCredits + projectedCredits);
-        result.innerHTML = `Projected CGPA: <strong>${projectedCGPA.toFixed(2)}</strong>`;
-        result.classList.add('show');
-    } else {
-        result.classList.remove('show');
-    }
-};
-
-document.getElementById('resetCGPABtn').addEventListener('click', () => {
-    if (confirm('Are you sure you want to reset all CGPA grades and predictions?')) {
-        cgpaData = { grades: {}, electives: {}, target: 0 };
-        saveCGPAData();
-        renderCGPA();
-    }
+/* clamp out-of-range typing on blur */
+[cgpaCurrent, cgpaTarget].forEach(inp => {
+  inp.addEventListener("blur", () => {
+    const n = toNum(inp.value);
+    if (n != null) inp.value = String(clamp(n, 0, 10));
+    onCgpaInput();
+  });
 });
+
+/* ---- open / close ---- */
+document.getElementById("cgpaToggleBtn").addEventListener("click", () => {
+  cgpaModal.classList.add("active");
+  calcCGPA();
+});
+document.getElementById("closeCgpaBtn").addEventListener("click", () => cgpaModal.classList.remove("active"));
+cgpaModal.addEventListener("click", e => { if (e.target === cgpaModal) cgpaModal.classList.remove("active"); });
+document.addEventListener("keydown", e => { if (e.key === "Escape") cgpaModal.classList.remove("active"); });
+
+/* ---- init inputs from saved state ---- */
+cgpaCurrent.value = cgpaState.current || "";
+cgpaSems.value    = String(clamp(parseInt(cgpaState.sems, 10) || 0, 0, TOTAL_SEMS));
+cgpaTarget.value  = cgpaState.target || "";
+calcCGPA();
 
 /* ================================================================
    INIT
-   ================================================================ */
+================================================================ */
 renderRoster();

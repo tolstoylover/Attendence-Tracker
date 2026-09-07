@@ -1,6 +1,6 @@
 /* ================================================================
    DESIGN TOKENS
-   ================================================================ */
+================================================================ */
 :root {
   --font-display: "Instrument Serif", "Georgia", serif;
   --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -33,10 +33,12 @@
   --green-bright: #22a967;
   --green-tint: rgba(22, 131, 79, .08);
   --green-tint-strong: rgba(22, 131, 79, .14);
-
   --amber: #c15d13;
   --amber-tint: rgba(193, 93, 19, .08);
   --blue: #2563eb;
+  --blue-tint: rgba(37, 99, 235, .08);
+  --red: #c23b3b;
+  --red-tint: rgba(194, 59, 59, .08);
 
   /* Breeze */
   --breeze-core: rgba(34, 169, 103, .35);
@@ -47,7 +49,6 @@
   --shadow: 0 1px 2px rgba(20, 50, 35, .03), 0 8px 24px rgba(20, 50, 35, .06), 0 20px 48px rgba(20, 50, 35, .04);
   --shadow-hover: 0 2px 4px rgba(20, 50, 35, .04), 0 12px 32px rgba(20, 50, 35, .10), 0 28px 64px rgba(20, 50, 35, .08);
   --shadow-button: 0 6px 18px rgba(22, 131, 79, .22), 0 1px 2px rgba(22, 131, 79, .15);
-
   --radius: 20px;
   --radius-sm: 12px;
   --radius-xs: 8px;
@@ -61,30 +62,28 @@
   --bg-blob-1: rgba(34, 169, 103, .12);
   --bg-blob-2: rgba(193, 93, 19, .07);
   --bg-blob-3: rgba(37, 99, 235, .08);
-
   --card: rgba(18, 28, 22, .68);
   --card-solid: #111b15;
   --paper-card: rgba(22, 34, 27, .55);
   --glass-border: rgba(255, 255, 255, .06);
   --border: rgba(255, 255, 255, .07);
   --border-strong: rgba(255, 255, 255, .12);
-
   --ink: #eef5ef;
   --ink-soft: #9aaa9f;
   --ink-faint: #6e7d73;
-
   --green: #4dcc87;
   --green-deep: #2ea969;
   --green-bright: #69e09c;
   --green-tint: rgba(76, 204, 135, .08);
   --green-tint-strong: rgba(76, 204, 135, .14);
-
   --amber: #f09a59;
   --amber-tint: rgba(240, 154, 89, .08);
-
+  --blue: #7aa5ff;
+  --blue-tint: rgba(122, 165, 255, .10);
+  --red: #ef6a6a;
+  --red-tint: rgba(239, 106, 106, .10);
   --breeze-core: rgba(76, 204, 135, .45);
   --breeze-soft: rgba(76, 204, 135, .18);
-
   --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
   --shadow: 0 2px 4px rgba(0,0,0,.25), 0 12px 32px rgba(0,0,0,.35);
   --shadow-hover: 0 4px 8px rgba(0,0,0,.3), 0 20px 48px rgba(0,0,0,.45);
@@ -93,9 +92,10 @@
 
 /* ================================================================
    RESET
-   ================================================================ */
+================================================================ */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
 body {
   margin: 0;
   min-height: 100vh;
@@ -152,7 +152,7 @@ body::after {
 
 /* ================================================================
    ACCESSIBILITY
-   ================================================================ */
+================================================================ */
 :focus-visible {
   outline: 2px solid var(--focus);
   outline-offset: 3px;
@@ -161,7 +161,7 @@ body::after {
 
 /* ================================================================
    LAYOUT
-   ================================================================ */
+================================================================ */
 .wrap {
   position: relative;
   z-index: 1;
@@ -172,7 +172,7 @@ body::after {
 
 /* ================================================================
    HEADER
-   ================================================================ */
+================================================================ */
 header {
   display: flex;
   align-items: flex-start;
@@ -211,7 +211,6 @@ header {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: .55; transform: scale(.85); }
 }
-
 h1 {
   margin: 10px 0 6px;
   font-family: var(--font-display);
@@ -235,7 +234,6 @@ h1 em::after {
   background: linear-gradient(90deg, var(--green), transparent);
   opacity: .4;
 }
-
 .subdate {
   color: var(--ink-soft);
   font-size: 13px;
@@ -243,12 +241,11 @@ h1 em::after {
   font-family: var(--font-mono);
   letter-spacing: -.01em;
 }
-
 .header-actions { display: flex; gap: 10px; align-items: center; }
 
 /* ================================================================
-   THEME BUTTON
-   ================================================================ */
+   THEME + CGPA BUTTONS
+================================================================ */
 .icon-btn {
   width: 44px;
   height: 44px;
@@ -272,9 +269,34 @@ h1 em::after {
 }
 .icon-btn:active { transform: scale(.92); }
 
+/* CGPA pill — sits beside the theme toggle */
+.cgpa-btn {
+  width: auto;
+  padding: 0 14px;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  color: var(--green);
+  background: var(--green-tint);
+  border-color: var(--green-tint-strong);
+}
+.cgpa-btn:hover {
+  background: var(--green-tint-strong);
+  box-shadow: var(--shadow);
+  transform: translateY(-2px) rotate(0deg);
+}
+.cgpa-btn .sig {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 16px;
+  line-height: 1;
+}
+
 /* ================================================================
    STATS
-   ================================================================ */
+================================================================ */
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -312,7 +334,6 @@ h1 em::after {
   border-color: var(--border-strong);
 }
 .stat:hover::before { transform: scale(1.3); opacity: 1; }
-
 .stat .icon {
   position: relative;
   width: 34px;
@@ -329,7 +350,6 @@ h1 em::after {
 .stat.present .icon { background: var(--green-tint); color: var(--green); border-color: var(--green-tint-strong); }
 .stat.absent  .icon { background: var(--amber-tint); color: var(--amber); border-color: rgba(193,93,19,.18); }
 .stat.total   .icon { background: var(--paper-card); color: var(--ink-soft); }
-
 .stat .n {
   position: relative;
   font-family: var(--font-display);
@@ -348,12 +368,12 @@ h1 em::after {
   color: var(--ink-soft);
   margin-top: 8px;
 }
-.stat.present .n, .stat.cgpa-active .n { color: var(--green); }
+.stat.present .n { color: var(--green); }
 .stat.absent  .n { color: var(--amber); }
 
 /* ================================================================
    PROGRESS
-   ================================================================ */
+================================================================ */
 .progress-row {
   display: flex;
   align-items: center;
@@ -418,7 +438,7 @@ h1 em::after {
 
 /* ================================================================
    TOOLBAR
-   ================================================================ */
+================================================================ */
 .toolbar {
   display: flex;
   gap: 10px;
@@ -470,7 +490,7 @@ h1 em::after {
 
 /* ================================================================
    BUTTONS
-   ================================================================ */
+================================================================ */
 button {
   font-family: inherit;
   cursor: pointer;
@@ -501,7 +521,6 @@ button {
   border-color: var(--border-strong);
 }
 .btn:active { transform: translateY(0) scale(.97); }
-
 .btn.present-all {
   background: var(--ink);
   color: var(--paper);
@@ -516,13 +535,11 @@ button {
   box-shadow: var(--shadow);
   filter: brightness(1.08);
 }
-
 .btn.clear-all {
   background: var(--card);
   color: var(--ink-soft);
 }
 .btn.clear-all:hover { color: var(--amber); border-color: rgba(193,93,19,.25); background: var(--amber-tint); }
-
 .btn.ghost {
   background: var(--paper-card);
   box-shadow: none;
@@ -536,7 +553,7 @@ button {
 
 /* ================================================================
    ROSTER
-   ================================================================ */
+================================================================ */
 .roster {
   background: var(--card);
   backdrop-filter: blur(22px);
@@ -582,7 +599,7 @@ button {
 
 /* ================================================================
    STUDENT ROW
-   ================================================================ */
+================================================================ */
 .row {
   position: relative;
   display: flex;
@@ -596,14 +613,8 @@ button {
   transition: background .25s ease, box-shadow .25s ease;
 }
 .row:last-child { border-bottom: none; }
-
-.row:hover {
-  background: rgba(22, 131, 79, .03);
-}
-[data-theme="dark"] .row:hover {
-  background: rgba(76, 204, 135, .04);
-}
-
+.row:hover { background: rgba(22, 131, 79, .03); }
+[data-theme="dark"] .row:hover { background: rgba(76, 204, 135, .04); }
 .row.present {
   background: linear-gradient(90deg, var(--green-tint-strong) 0%, var(--green-tint) 40%, transparent 100%);
 }
@@ -643,7 +654,7 @@ button {
 
 /* ================================================================
    CHECKBOX — custom styled
-   ================================================================ */
+================================================================ */
 .row input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -680,8 +691,8 @@ button {
 }
 
 /* ================================================================
-   ROLL NUMBER
-   ================================================================ */
+   ROLL NUMBER / INFO / BADGE
+================================================================ */
 .row .roll {
   width: 42px;
   flex: none;
@@ -701,10 +712,6 @@ button {
   background: var(--green-tint);
   border-color: var(--green-tint-strong);
 }
-
-/* ================================================================
-   STUDENT INFO
-   ================================================================ */
 .row .info { min-width: 0; flex: 1; }
 .row .name {
   font-size: 14.5px;
@@ -725,10 +732,6 @@ button {
   white-space: nowrap;
   letter-spacing: .01em;
 }
-
-/* ================================================================
-   BADGE
-   ================================================================ */
 .row .badge {
   flex: none;
   font-family: var(--font-mono);
@@ -758,7 +761,7 @@ button {
 
 /* ================================================================
    EMPTY STATE
-   ================================================================ */
+================================================================ */
 .empty {
   padding: 60px 20px;
   text-align: center;
@@ -775,7 +778,7 @@ button {
 
 /* ================================================================
    OUTPUT PANEL
-   ================================================================ */
+================================================================ */
 .output {
   background: var(--card);
   backdrop-filter: blur(22px);
@@ -822,7 +825,6 @@ button {
   font-style: italic;
   font-family: var(--font-display);
 }
-
 .output .meta-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -853,7 +855,6 @@ button {
   color: var(--ink);
   letter-spacing: -.01em;
 }
-
 .output .clip-label {
   display: flex;
   align-items: center;
@@ -872,7 +873,6 @@ button {
   background: var(--green);
   box-shadow: 0 0 0 3px var(--green-tint);
 }
-
 .output pre {
   background: var(--paper-card);
   border: 1px dashed var(--border-strong);
@@ -888,7 +888,6 @@ button {
   overflow: auto;
   color: var(--ink);
 }
-
 .output-actions {
   display: flex;
   gap: 8px;
@@ -896,8 +895,8 @@ button {
 }
 
 /* ================================================================
-   CGPA MODAL & COMPONENTS
-   ================================================================ */
+   MODAL BASE
+================================================================ */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 1000;
   background: rgba(10, 15, 12, 0.5);
@@ -905,22 +904,29 @@ button {
   -webkit-backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center;
   padding: 20px;
-  opacity: 0; transition: opacity 0.3s ease;
 }
-.modal-overlay.active { display: flex; opacity: 1; }
+.modal-overlay.active {
+  display: flex;
+  animation: overlayIn .3s ease;
+}
+@keyframes overlayIn { from { opacity: 0; } to { opacity: 1; } }
+
 .modal {
   background: var(--card-solid);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
-  width: 100%; max-width: 780px; max-height: 90vh;
+  width: 100%;
+  max-height: 90vh;
   display: flex; flex-direction: column;
   box-shadow: var(--shadow);
-  transform: translateY(20px) scale(0.98);
-  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
-[data-theme="dark"] .modal { background: var(--paper-deep); }
-.modal-overlay.active .modal { transform: translateY(0) scale(1); }
-
+.modal-overlay.active .modal {
+  animation: modalIn .45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(24px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
 .modal-header {
   padding: 24px 30px; border-bottom: 1px solid var(--border);
   display: flex; justify-content: space-between; align-items: center;
@@ -932,124 +938,236 @@ button {
   width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer; color: var(--ink); transition: all 0.2s ease;
+  font-size: 13px;
 }
-.modal-close:hover { background: var(--border); color: var(--ink); }
-
+.modal-close:hover { background: var(--border); transform: rotate(90deg); }
 .modal-body { padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
 
-/* CGPA Simple Calculator Styles */
-.cgpa-simple-modal .modal-body { padding: 24px; }
-.cgpa-inputs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
-.cgpa-input-group { display: flex; flex-direction: column; gap: 6px; }
-.cgpa-input-group label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-soft); }
-.cgpa-simple-input, .cgpa-simple-select {
-  height: 44px; padding: 0 16px; border: 1px solid var(--glass-border);
-  border-radius: 12px; background: var(--paper-card); color: var(--ink);
-  font-family: inherit; font-size: 14px; font-weight: 500;
+/* ================================================================
+   SIMPLE CGPA CALCULATOR
+================================================================ */
+.cgpa-modal {
+  max-width: 470px;
+  background: var(--card);
+  backdrop-filter: blur(26px) saturate(1.2);
+  -webkit-backdrop-filter: blur(26px) saturate(1.2);
 }
-.cgpa-simple-input:focus, .cgpa-simple-select:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px var(--green-tint); }
-.cgpa-simple-select { cursor: pointer; }
-
-.cgpa-result-section { display: none; flex-direction: column; gap: 16px; animation: fadeInScale 0.35s ease-out; }
-@keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-.cgpa-main-result {
-  text-align: center; padding: 24px; background: linear-gradient(135deg, var(--green-tint), var(--green-tint-strong));
-  border: 1px solid var(--green-tint-strong); border-radius: 16px;
+[data-theme="dark"] .cgpa-modal { background: rgba(13, 22, 16, .84); }
+.cgpa-modal .modal-header { padding: 20px 24px; }
+.cgpa-modal .modal-header h2 { font-size: 26px; letter-spacing: -.01em; }
+.cgpa-modal .modal-header h2 em { color: var(--green); }
+.cgpa-modal .modal-body { padding: 22px 24px 26px; gap: 16px; }
+.cgpa-sub {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 5px;
 }
-.cgpa-result-value { font-family: var(--font-display); font-size: 48px; font-style: italic; color: var(--green); line-height: 1; }
-.cgpa-result-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-soft); margin-top: 8px; }
 
-.cgpa-analysis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.analysis-row { display: flex; flex-direction: column; gap: 4px; padding: 12px; background: var(--paper-card); border-radius: 10px; border: 1px solid var(--border); }
-.analysis-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); }
-.analysis-value { font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--ink); }
+/* Inputs */
+.cgpa-inputs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+.cgpa-field { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.cgpa-field label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+.cgpa-field input,
+.cgpa-field select {
+  width: 100%;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+.cgpa-field input:hover,
+.cgpa-field select:hover { border-color: var(--border-strong); }
+.cgpa-field input:focus,
+.cgpa-field select:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-tint);
+  transform: translateY(-1px);
+}
+.cgpa-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  padding-right: 30px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a6b62' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  background-size: 14px;
+}
+[data-theme="dark"] .cgpa-field select {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239aaa9f' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
 
-.cgpa-status-text {
-  padding: 14px 16px; background: var(--paper-card); border-radius: 12px;
-  font-size: 13px; font-weight: 500; color: var(--ink-soft); text-align: center;
+/* Hero — the visual focus */
+.cgpa-hero {
+  position: relative;
+  text-align: center;
+  padding: 26px 20px 22px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 50% -10%, var(--green-tint-strong), transparent 70%),
+    var(--paper-card);
   border: 1px solid var(--border);
+  overflow: hidden;
+  transition: border-color .3s ease, background .3s ease;
+}
+.cgpa-hero-num {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(46px, 12vw, 62px);
+  line-height: 1;
+  letter-spacing: -.02em;
+  color: var(--green);
+}
+.cgpa-hero-num.pop { animation: cgpaPop .35s cubic-bezier(.2,.8,.2,1); }
+@keyframes cgpaPop {
+  0%   { transform: scale(.9); opacity: .3; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.cgpa-hero-lbl {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--ink-soft);
+}
+.cgpa-hero.tone-green  { border-color: var(--green-tint-strong); }
+.cgpa-hero.tone-green  .cgpa-hero-num { color: var(--green); }
+.cgpa-hero.tone-blue   { border-color: rgba(37, 99, 235, .22); }
+.cgpa-hero.tone-blue   .cgpa-hero-num { color: var(--blue); }
+.cgpa-hero.tone-amber  { border-color: rgba(193, 93, 19, .25); }
+.cgpa-hero.tone-amber  .cgpa-hero-num { color: var(--amber); }
+.cgpa-hero.tone-red    { border-color: rgba(194, 59, 59, .28); }
+.cgpa-hero.tone-red    .cgpa-hero-num { color: var(--red); }
+.cgpa-hero.tone-neutral .cgpa-hero-num { color: var(--ink-faint); }
+
+/* Analysis chips */
+.cgpa-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.cgpa-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--paper-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 11px 14px;
+  transition: transform .2s ease, border-color .2s ease;
+}
+.cgpa-chip:hover { transform: translateY(-1px); border-color: var(--border-strong); }
+.cgpa-chip .k {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--ink-soft);
+}
+.cgpa-chip .v {
+  font-family: var(--font-display);
+  font-size: 18px;
+  letter-spacing: -.01em;
+  color: var(--ink);
 }
 
-.cgpa-quick-insight { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.insight-item { text-align: center; padding: 14px 10px; background: var(--card); border: 1px solid var(--glass-border); border-radius: 12px; }
-.insight-label { font-family: var(--font-mono); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 6px; }
-.insight-value { font-family: var(--font-display); font-size: 16px; font-style: italic; color: var(--green); }
-
-.cgpa-message {
-  padding: 14px 16px; background: var(--amber-tint); border: 1px solid rgba(193,93,19,.2);
-  border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--amber); text-align: center;
+/* Status pill */
+.cgpa-status {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: center;
+  border: 1px solid transparent;
+  line-height: 1.5;
 }
+.tone-green   { background: var(--green-tint); color: var(--green); border-color: var(--green-tint-strong); }
+.tone-blue    { background: var(--blue-tint);  color: var(--blue);  border-color: rgba(37, 99, 235, .20); }
+.tone-amber   { background: var(--amber-tint); color: var(--amber); border-color: rgba(193, 93, 19, .22); }
+.tone-red     { background: var(--red-tint);   color: var(--red);   border-color: rgba(194, 59, 59, .25); }
+.tone-neutral { background: var(--paper-card); color: var(--ink-soft); border-color: var(--border); }
 
-/* CGPA Target Section */
-.cgpa-target {
-  background: var(--card); border: 1px solid var(--glass-border);
-  border-radius: 16px; padding: 20px; display: flex; flex-direction: column; gap: 12px;
-}
-.cgpa-target .title { font-family: var(--font-mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); }
-.target-input-row { display: flex; gap: 12px; }
-.target-input {
-  flex: 1; height: 44px; padding: 0 16px; border: 1px solid var(--glass-border);
-  border-radius: 12px; background: var(--paper-card); color: var(--ink);
-  font-family: inherit; font-size: 14px; font-weight: 500;
-}
-.target-input:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px var(--green-tint); }
-.target-result { font-size: 13px; font-weight: 500; padding: 12px; background: var(--paper-card); border-radius: 10px; display: none;}
-.target-result.show { display: block; }
-
-/* What If Section */
-.whatif-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
-.whatif-item { display: flex; align-items: center; gap: 8px; }
-.whatif-item label { font-size: 12px; color: var(--ink-soft); font-weight: 500; white-space: nowrap; }
-.whatif-item input {
-    height: 36px; width: 100%; border: 1px solid var(--glass-border);
-    border-radius: 8px; background: var(--paper-card); padding: 0 10px;
-    font-size: 13px; color: var(--ink);
+/* Sentence */
+.cgpa-sentence {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 14.5px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--ink-soft);
 }
 
-/* Semester Cards */
-.sem-card {
-  background: var(--card); border: 1px solid var(--glass-border);
-  border-radius: 16px; overflow: hidden; transition: border-color 0.3s ease;
+/* Quick insight */
+.cgpa-insight {
+  border: 1px dashed var(--border-strong);
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: var(--paper-card);
 }
-.sem-header {
-  padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
-  background: var(--paper-card); transition: background 0.3s ease;
+.cgpa-insight-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--ink-soft);
+  margin-bottom: 10px;
 }
-.sem-header:hover { background: var(--green-tint); }
-.sem-title { font-weight: 600; font-size: 15px; }
-.sem-meta { font-family: var(--font-mono); font-size: 11px; color: var(--ink-soft); }
-.sem-body { padding: 0; max-height: 0; overflow: hidden; transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.sem-body.active { padding: 16px 20px; max-height: 2500px; border-top: 1px solid var(--border); }
-
-/* Subject Rows */
-.subj-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  padding: 12px 0; border-bottom: 1px solid var(--border);
+.cgpa-insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
 }
-.subj-row:last-child { border-bottom: none; }
-.subj-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
-.subj-name { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.subj-code { font-family: var(--font-mono); font-size: 10px; color: var(--ink-soft); letter-spacing: 0.05em; }
-.subj-selects { display: flex; gap: 8px; align-items: center; }
-
-.cgpa-select {
-  height: 38px; padding: 0 12px; border: 1px solid var(--border-strong);
-  border-radius: 10px; background: var(--paper-card); color: var(--ink);
-  font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer;
+.insight-cell { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.insight-cell .k {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--ink-faint);
 }
-.cgpa-select:focus { border-color: var(--green); outline: none; }
-
-.sgpa-display {
-  margin-top: 12px; padding: 14px; background: var(--green-tint);
-  border-radius: 12px; text-align: center; border: 1px solid var(--green-tint-strong);
+.insight-cell .v {
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.2;
+  color: var(--green);
+  letter-spacing: -.01em;
+  overflow-wrap: anywhere;
 }
-.sgpa-val { font-family: var(--font-display); font-size: 24px; color: var(--green); line-height: 1; margin-bottom: 4px;}
-.sgpa-lbl { font-family: var(--font-mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); }
 
 /* ================================================================
    TOAST
-   ================================================================ */
+================================================================ */
 .toast {
   position: fixed;
   left: 50%;
@@ -1083,6 +1201,7 @@ button {
   justify-content: center;
   font-size: 11px;
   font-weight: 700;
+  flex: none;
 }
 [data-theme="dark"] .toast::before { background: rgba(0,0,0,.2); }
 .toast.show {
@@ -1092,7 +1211,7 @@ button {
 
 /* ================================================================
    SUBMIT BAR
-   ================================================================ */
+================================================================ */
 .submit-bar {
   position: fixed;
   left: 0; right: 0; bottom: 0;
@@ -1108,9 +1227,7 @@ button {
   border-top: 1px solid var(--glass-border);
   box-shadow: 0 -8px 32px rgba(20,50,35,.06);
 }
-[data-theme="dark"] .submit-bar {
-  box-shadow: 0 -8px 32px rgba(0,0,0,.35);
-}
+[data-theme="dark"] .submit-bar { box-shadow: 0 -8px 32px rgba(0,0,0,.35); }
 .submit-bar .hint {
   margin-right: auto;
   font-family: var(--font-mono);
@@ -1133,7 +1250,7 @@ button {
 
 /* ================================================================
    SUBMIT BUTTON
-   ================================================================ */
+================================================================ */
 .submit-btn {
   min-height: 48px;
   padding: 0 28px;
@@ -1170,7 +1287,7 @@ button {
 
 /* ================================================================
    CREDIT
-   ================================================================ */
+================================================================ */
 .credit {
   text-align: center;
   margin-top: 20px;
@@ -1187,7 +1304,7 @@ button {
 
 /* ================================================================
    SCROLLBAR
-   ================================================================ */
+================================================================ */
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -1198,7 +1315,7 @@ button {
 
 /* ================================================================
    MOBILE
-   ================================================================ */
+================================================================ */
 @media (max-width: 650px) {
   .wrap { width: min(calc(100% - 20px), 940px); padding-top: 26px; }
   header { margin-bottom: 22px; }
@@ -1222,15 +1339,19 @@ button {
   .output { padding: 18px; margin-bottom: 70px; }
   .output .meta-row { grid-template-columns: 1fr; }
   .roster-header { padding: 12px 16px; }
-  
-  .subj-row { flex-direction: column; align-items: flex-start; }
-  .subj-selects { width: 100%; }
-  .cgpa-select { flex: 1; }
-  .modal-header h2 { font-size: 24px; }
-  
-  .cgpa-analysis { grid-template-columns: 1fr; }
-  .cgpa-quick-insight { grid-template-columns: 1fr; }
-  .cgpa-result-value { font-size: 36px; }
+
+  /* CGPA modal mobile */
+  .modal-overlay { padding: 14px; }
+  .cgpa-modal .modal-header { padding: 18px 18px; }
+  .cgpa-modal .modal-header h2 { font-size: 22px; }
+  .cgpa-modal .modal-body { padding: 18px; gap: 14px; }
+  .cgpa-inputs { grid-template-columns: 1fr; gap: 10px; }
+  .cgpa-field { flex-direction: row; align-items: center; justify-content: space-between; gap: 10px; }
+  .cgpa-field label { flex: none; }
+  .cgpa-field input, .cgpa-field select { max-width: 170px; height: 42px; }
+  .cgpa-hero { padding: 22px 16px 18px; }
+  .cgpa-insight-grid { gap: 8px; }
+  .insight-cell .v { font-size: 15px; }
 }
 
 @media (max-width: 380px) {
@@ -1238,15 +1359,17 @@ button {
   .stat { padding: 12px 10px; }
   .stat .n { font-size: 22px; }
   .row .badge { display: none; }
+  .cgpa-grid { grid-template-columns: 1fr 1fr; }
+  .cgpa-insight-grid { grid-template-columns: 1fr; }
 }
 
 /* ================================================================
    PRINT
-   ================================================================ */
+================================================================ */
 @media print {
   body { padding-bottom: 0; background: #fff; color: #111; }
   body::before, body::after { display: none !important; }
-  .toolbar, .submit-bar, .icon-btn, .output-actions, .toast, .roster-header, .header-actions { display: none !important; }
+  .toolbar, .submit-bar, .icon-btn, .output-actions, .toast, .roster-header, .header-actions, .modal-overlay { display: none !important; }
   .wrap { width: 100%; max-width: none; padding: 0; }
   .stat, .roster, .output { box-shadow: none; background: #fff; border: 1px solid #ddd; }
   .row { break-inside: avoid; }
@@ -1254,7 +1377,7 @@ button {
 
 /* ================================================================
    CONFETTI
-   ================================================================ */
+================================================================ */
 .confetti-container {
   position: fixed;
   inset: 0;
@@ -1281,7 +1404,7 @@ button {
 
 /* ================================================================
    REDUCED MOTION
-   ================================================================ */
+================================================================ */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

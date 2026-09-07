@@ -1,27 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Live attendance register with CGPA target calculator — Five Years Integrated M.Sc. Mathematics">
   <title>Attendance Register — Roll Call</title>
-  <meta name="description" content="A modern, elegant attendance register for the class." />
-  <meta name="theme-color" content="#1E2A22" />
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2316834f'/%3E%3Cpath d='M28 52l14 14 30-32' stroke='white' stroke-width='9' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
-
-  <!-- Fonts from fontsource -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/instrument-serif@latest/latin-400-normal.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/instrument-serif@latest/latin-400-italic.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-wght-normal.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-wght-normal.css" />
-
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <div class="wrap">
 
+    <!-- ============ HEADER ============ -->
     <header>
       <div class="title-block">
         <span class="eyebrow">Roll Call · Live</span>
@@ -29,12 +23,15 @@
         <div class="subdate" id="todayLabel">—</div>
       </div>
       <div class="header-actions">
-        <button class="btn ghost" id="cgpaToggleBtn" aria-label="Open CGPA Tracker">Σ CGPA</button>
-        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌙</button>
+        <button class="icon-btn cgpa-btn" id="cgpaToggleBtn" title="CGPA Target Calculator" aria-label="Open CGPA target calculator">
+          <span class="sig">Σ</span>CGPA
+        </button>
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle light or dark theme">🌙</button>
       </div>
     </header>
 
-    <section class="stats">
+    <!-- ============ STATS ============ -->
+    <section class="stats" aria-label="Attendance summary">
       <div class="stat total">
         <div class="icon">👥</div>
         <div class="n" id="statTotal">0</div>
@@ -52,32 +49,34 @@
       </div>
     </section>
 
+    <!-- ============ PROGRESS ============ -->
     <div class="progress-row">
       <span class="progress-label">Attendance</span>
-      <div class="progress-track">
-        <div class="progress-fill" id="progressFill"></div>
-      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
       <span class="progress-pct" id="progressPct">0%</span>
     </div>
 
+    <!-- ============ TOOLBAR ============ -->
     <div class="toolbar">
       <div class="search">
-        <input id="searchInput" type="text" placeholder="Search by name, roll, or registration…" autocomplete="off" />
+        <input type="text" id="searchInput" placeholder="Search name, roll or reg no…" autocomplete="off" aria-label="Search students">
       </div>
       <button class="btn present-all" id="selectAllBtn">✓ Mark all present</button>
       <button class="btn clear-all" id="clearAllBtn">Clear all</button>
     </div>
 
-    <div class="roster">
+    <!-- ============ ROSTER ============ -->
+    <section class="roster">
       <div class="roster-header">
         <span class="rh-title">Class Roster</span>
         <span class="rh-count" id="visibleCount">0 students</span>
       </div>
       <div id="roster"></div>
-      <div class="empty" id="emptyState" style="display:none">No students match your search.</div>
-    </div>
+      <div class="empty" id="emptyState">No students match your search.</div>
+    </section>
 
-    <div class="output" id="outputPanel">
+    <!-- ============ OUTPUT PANEL ============ -->
+    <section class="output" id="outputPanel" aria-live="polite">
       <h2>Attendance Submitted</h2>
       <p class="output-sub">Date and time are stamped on every submission, so this record won't get mixed up with another session.</p>
       <div class="meta-row">
@@ -85,114 +84,96 @@
         <div class="meta-chip"><span class="k">Time</span><span class="v" id="metaTime">—</span></div>
         <div class="meta-chip"><span class="k">Present</span><span class="v" id="metaCount">0 / 0</span></div>
       </div>
-      <div class="clip-label"><span class="dot"></span>On your clipboard</div>
+      <div class="clip-label"><span class="dot"></span> On your clipboard</div>
       <pre id="outputText"></pre>
       <div class="output-actions">
         <button class="btn ghost" id="copyAgainBtn">📋 Copy again</button>
         <button class="btn ghost" id="exportBtn">⬇️ Export .txt</button>
         <button class="btn ghost" id="printBtn">🖨️ Print</button>
       </div>
-    </div>
+    </section>
 
-    <div class="credit">Made by <span>Aditya Kumar Sinha</span></div>
-
+    <footer class="credit">Made by <span>Aditya Kumar Sinha</span></footer>
   </div>
 
-  <!-- CGPA MODAL -->
-  <div class="modal-overlay" id="cgpaModal">
-    <div class="modal cgpa-simple-modal">
+  <!-- ============ CGPA TARGET CALCULATOR MODAL ============ -->
+  <div class="modal-overlay" id="cgpaModal" role="dialog" aria-modal="true" aria-labelledby="cgpaModalTitle">
+    <div class="modal cgpa-modal">
+
       <div class="modal-header">
         <div>
-          <h2>CGPA <em>Calculator</em></h2>
-          <div class="subdate">Simple Target Calculator</div>
+          <h2 id="cgpaModalTitle">CGPA <em>Target</em></h2>
+          <div class="cgpa-sub">Integrated M.Sc. Mathematics · 10 Semesters</div>
         </div>
-        <button class="modal-close" id="closeCgpaBtn">✕</button>
+        <button class="modal-close" id="closeCgpaBtn" aria-label="Close CGPA calculator">✕</button>
       </div>
-      
-      <div class="modal-body cgpa-simple-body">
+
+      <div class="modal-body">
+
+        <!-- Inputs -->
         <div class="cgpa-inputs">
-          <div class="cgpa-input-group">
-            <label for="simpleCurrentCGPA">Current CGPA</label>
-            <input type="number" id="simpleCurrentCGPA" class="cgpa-simple-input" placeholder="8.20" step="0.01" min="0" max="10" value="">
+          <div class="cgpa-field">
+            <label for="cgpaCurrent">Current CGPA</label>
+            <input type="number" id="cgpaCurrent" inputmode="decimal" min="0" max="10" step="0.01" placeholder="8.20">
           </div>
-          <div class="cgpa-input-group">
-            <label for="simpleSemestersPassed">Semesters Passed</label>
-            <select id="simpleSemestersPassed" class="cgpa-simple-select">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4" selected>4</option>
-              <option value="5">5</option>
-              <option value="6">6</option>
-              <option value="7">7</option>
-              <option value="8">8</option>
-              <option value="9">9</option>
+          <div class="cgpa-field">
+            <label for="cgpaSemesters">Semesters Passed</label>
+            <select id="cgpaSemesters">
+              <option value="0">0</option><option value="1">1</option>
+              <option value="2">2</option><option value="3">3</option>
+              <option value="4">4</option><option value="5">5</option>
+              <option value="6">6</option><option value="7">7</option>
+              <option value="8">8</option><option value="9">9</option>
               <option value="10">10</option>
             </select>
           </div>
-          <div class="cgpa-input-group">
-            <label for="simpleTargetCGPA">Target CGPA</label>
-            <input type="number" id="simpleTargetCGPA" class="cgpa-simple-input" placeholder="8.50" step="0.01" min="0" max="10" value="">
+          <div class="cgpa-field">
+            <label for="cgpaTarget">Target CGPA</label>
+            <input type="number" id="cgpaTarget" inputmode="decimal" min="0" max="10" step="0.01" placeholder="8.50">
           </div>
         </div>
 
-        <div class="cgpa-result-section" id="cgpaResultSection" style="display: none;">
-          <div class="cgpa-main-result">
-            <div class="cgpa-result-value" id="requiredAverageSGPA">0.00</div>
-            <div class="cgpa-result-label">Required Average SGPA</div>
-          </div>
+        <!-- Hero result -->
+        <div class="cgpa-hero tone-neutral" id="cgpaHero" aria-live="polite">
+          <div class="cgpa-hero-num" id="cgpaRequired">—</div>
+          <div class="cgpa-hero-lbl" id="cgpaRequiredLbl">Required average SGPA</div>
+        </div>
 
-          <div class="cgpa-analysis">
-            <div class="analysis-row">
-              <span class="analysis-label">Current CGPA</span>
-              <span class="analysis-value" id="analysisCurrentCGPA">0.00</span>
-            </div>
-            <div class="analysis-row">
-              <span class="analysis-label">Target CGPA</span>
-              <span class="analysis-value" id="analysisTargetCGPA">0.00</span>
-            </div>
-            <div class="analysis-row">
-              <span class="analysis-label">Semesters Completed</span>
-              <span class="analysis-value" id="analysisSemestersCompleted">0 / 10</span>
-            </div>
-            <div class="analysis-row">
-              <span class="analysis-label">Remaining</span>
-              <span class="analysis-value" id="analysisRemaining">0 semesters</span>
-            </div>
-          </div>
+        <!-- Analysis chips -->
+        <div class="cgpa-grid">
+          <div class="cgpa-chip"><span class="k">Current CGPA</span><span class="v" id="cCurrent">—</span></div>
+          <div class="cgpa-chip"><span class="k">Target CGPA</span><span class="v" id="cTarget">—</span></div>
+          <div class="cgpa-chip"><span class="k">Completed</span><span class="v" id="cCompleted">—</span></div>
+          <div class="cgpa-chip"><span class="k">Remaining</span><span class="v" id="cRemaining">—</span></div>
+        </div>
 
-          <div class="cgpa-status-text" id="cgpaStatusText"></div>
+        <!-- Status + sentence -->
+        <div class="cgpa-status tone-neutral" id="cgpaStatus">Enter your CGPA details to see the plan.</div>
+        <p class="cgpa-sentence" id="cgpaSentence">Fill in your current CGPA and target CGPA — the result updates live.</p>
 
-          <div class="cgpa-quick-insight">
-            <div class="insight-item">
-              <div class="insight-label">Your Target</div>
-              <div class="insight-value" id="insightTarget">0.00</div>
-            </div>
-            <div class="insight-item">
-              <div class="insight-label">You Need</div>
-              <div class="insight-value" id="insightNeed">0.00 average</div>
-            </div>
-            <div class="insight-item">
-              <div class="insight-label">Margin</div>
-              <div class="insight-value" id="insightMargin">+0.00 above target</div>
-            </div>
+        <!-- Quick insight -->
+        <div class="cgpa-insight">
+          <div class="cgpa-insight-title">Quick Insight</div>
+          <div class="cgpa-insight-grid">
+            <div class="insight-cell"><span class="k">Your target</span><span class="v" id="iTarget">—</span></div>
+            <div class="insight-cell"><span class="k">You need</span><span class="v" id="iNeed">—</span></div>
+            <div class="insight-cell"><span class="k">Margin</span><span class="v" id="iMargin">—</span></div>
           </div>
         </div>
 
-        <div class="cgpa-message" id="cgpaMessage" style="display: none;"></div>
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast">Attendance copied successfully!</div>
+  <!-- ============ TOAST ============ -->
+  <div class="toast" id="toast" role="status"></div>
 
+  <!-- ============ SUBMIT BAR ============ -->
   <div class="submit-bar">
-    <span class="hint"><kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>↵</kbd> to submit</span>
+    <span class="hint"><kbd>Ctrl / ⌘</kbd> + <kbd>↵</kbd> to submit</span>
     <button class="submit-btn" id="submitBtn">Submit Attendance</button>
   </div>
 
-  <!-- Custom Scripts -->
   <script src="index.js"></script>
 </body>
 </html>
