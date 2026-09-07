@@ -476,7 +476,7 @@ function performSimpleCalculation() {
     
     // Hide message, show results
     messageDiv.style.display = 'none';
-    resultSection.style.display = 'flex';
+    resultSection.style.display = (currentCGPA > 0 || targetCGPA > 0) ? 'flex' : 'none';
     
     const remainingSemesters = 10 - semestersPassed;
     

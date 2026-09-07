@@ -950,7 +950,7 @@ button {
 .cgpa-simple-input:focus, .cgpa-simple-select:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px var(--green-tint); }
 .cgpa-simple-select { cursor: pointer; }
 
-.cgpa-result-section { display: flex; flex-direction: column; gap: 16px; animation: fadeInScale 0.35s ease-out; }
+.cgpa-result-section { display: none; flex-direction: column; gap: 16px; animation: fadeInScale 0.35s ease-out; }
 @keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
 .cgpa-main-result {
