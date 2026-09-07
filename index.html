@@ -100,46 +100,87 @@
 
   <!-- CGPA MODAL -->
   <div class="modal-overlay" id="cgpaModal">
-    <div class="modal">
+    <div class="modal cgpa-simple-modal">
       <div class="modal-header">
         <div>
-          <h2>CGPA <em>Tracker</em></h2>
-          <div class="subdate">Five Years Integrated M.Sc. Mathematics</div>
+          <h2>CGPA <em>Calculator</em></h2>
+          <div class="subdate">Simple Target Calculator</div>
         </div>
         <button class="modal-close" id="closeCgpaBtn">✕</button>
       </div>
       
-      <div class="modal-body">
-        <section class="stats" style="margin-bottom:0;">
-          <div class="stat cgpa-active">
-            <div class="n" id="currentCGPA">0.00</div>
-            <div class="l">Current CGPA</div>
+      <div class="modal-body cgpa-simple-body">
+        <div class="cgpa-inputs">
+          <div class="cgpa-input-group">
+            <label for="simpleCurrentCGPA">Current CGPA</label>
+            <input type="number" id="simpleCurrentCGPA" class="cgpa-simple-input" placeholder="8.20" step="0.01" min="0" max="10" value="">
           </div>
-          <div class="stat">
-            <div class="n" id="totalCredits">0</div>
-            <div class="l">Credits Completed</div>
+          <div class="cgpa-input-group">
+            <label for="simpleSemestersPassed">Semesters Passed</label>
+            <select id="simpleSemestersPassed" class="cgpa-simple-select">
+              <option value="0">0</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
           </div>
-          <div class="stat">
-            <div class="n" id="semestersCompleted">0/10</div>
-            <div class="l">Semesters</div>
+          <div class="cgpa-input-group">
+            <label for="simpleTargetCGPA">Target CGPA</label>
+            <input type="number" id="simpleTargetCGPA" class="cgpa-simple-input" placeholder="8.50" step="0.01" min="0" max="10" value="">
           </div>
-        </section>
-
-        <div class="cgpa-target">
-          <span class="title">🎯 Target & Projections</span>
-          <div class="target-input-row">
-            <input type="number" class="target-input" id="targetCGPA" placeholder="Enter target CGPA (e.g. 8.5)" step="0.01" min="0" max="10">
-          </div>
-          <div class="target-result" id="targetResult"></div>
-          
-          <span class="title" style="margin-top:10px;">🔮 What-If Calculator (Future Semesters)</span>
-          <div class="whatif-grid" id="whatifContainer"></div>
-          <div class="target-result" id="whatifResult"></div>
         </div>
 
-        <div id="semestersContainer"></div>
+        <div class="cgpa-result-section" id="cgpaResultSection" style="display: none;">
+          <div class="cgpa-main-result">
+            <div class="cgpa-result-value" id="requiredAverageSGPA">0.00</div>
+            <div class="cgpa-result-label">Required Average SGPA</div>
+          </div>
 
-        <button class="btn clear-all" id="resetCGPABtn" style="margin-top: 10px; width: 100%; justify-content: center;">Reset CGPA Data</button>
+          <div class="cgpa-analysis">
+            <div class="analysis-row">
+              <span class="analysis-label">Current CGPA</span>
+              <span class="analysis-value" id="analysisCurrentCGPA">0.00</span>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">Target CGPA</span>
+              <span class="analysis-value" id="analysisTargetCGPA">0.00</span>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">Semesters Completed</span>
+              <span class="analysis-value" id="analysisSemestersCompleted">0 / 10</span>
+            </div>
+            <div class="analysis-row">
+              <span class="analysis-label">Remaining</span>
+              <span class="analysis-value" id="analysisRemaining">0 semesters</span>
+            </div>
+          </div>
+
+          <div class="cgpa-status-text" id="cgpaStatusText"></div>
+
+          <div class="cgpa-quick-insight">
+            <div class="insight-item">
+              <div class="insight-label">Your Target</div>
+              <div class="insight-value" id="insightTarget">0.00</div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-label">You Need</div>
+              <div class="insight-value" id="insightNeed">0.00 average</div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-label">Margin</div>
+              <div class="insight-value" id="insightMargin">+0.00 above target</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cgpa-message" id="cgpaMessage" style="display: none;"></div>
       </div>
     </div>
   </div>

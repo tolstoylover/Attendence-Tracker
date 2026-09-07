@@ -402,10 +402,140 @@ const cgpaModal = document.getElementById('cgpaModal');
 document.getElementById('cgpaToggleBtn').addEventListener('click', () => {
     loadCGPAData();
     renderCGPA();
+    initSimpleCGPACalculator();
     cgpaModal.classList.add('active');
 });
 document.getElementById('closeCgpaBtn').addEventListener('click', () => cgpaModal.classList.remove('active'));
 cgpaModal.addEventListener('click', (e) => { if(e.target === cgpaModal) cgpaModal.classList.remove('active'); });
+
+/* ================================================================
+   SIMPLE CGPA CALCULATOR
+   ================================================================ */
+function initSimpleCGPACalculator() {
+    const currentInput = document.getElementById('simpleCurrentCGPA');
+    const semestersSelect = document.getElementById('simpleSemestersPassed');
+    const targetInput = document.getElementById('simpleTargetCGPA');
+    
+    // Load saved values if any
+    const saved = loadSimpleCGPAData();
+    if (saved.current !== null) currentInput.value = saved.current;
+    semestersSelect.value = saved.semesters;
+    if (saved.target !== null) targetInput.value = saved.target;
+    
+    // Calculate on input change
+    const calculate = () => {
+        saveSimpleCGPAData();
+        performSimpleCalculation();
+    };
+    
+    currentInput.addEventListener('input', calculate);
+    semestersSelect.addEventListener('change', calculate);
+    targetInput.addEventListener('input', calculate);
+    
+    // Initial calculation
+    performSimpleCalculation();
+}
+
+const SIMPLE_CGPA_KEY = 'simpleCGPACalculator.v1';
+
+function loadSimpleCGPAData() {
+    try {
+        const raw = localStorage.getItem(SIMPLE_CGPA_KEY);
+        return raw ? JSON.parse(raw) : { current: '', semesters: 4, target: '' };
+    } catch(e) { return { current: '', semesters: 4, target: '' }; }
+}
+
+function saveSimpleCGPAData() {
+    const data = {
+        current: document.getElementById('simpleCurrentCGPA').value,
+        semesters: document.getElementById('simpleSemestersPassed').value,
+        target: document.getElementById('simpleTargetCGPA').value
+    };
+    try { localStorage.setItem(SIMPLE_CGPA_KEY, JSON.stringify(data)); } catch(e) {}
+}
+
+function performSimpleCalculation() {
+    const currentCGPA = parseFloat(document.getElementById('simpleCurrentCGPA').value) || 0;
+    const semestersPassed = parseInt(document.getElementById('simpleSemestersPassed').value) || 0;
+    const targetCGPA = parseFloat(document.getElementById('simpleTargetCGPA').value) || 0;
+    
+    const resultSection = document.getElementById('cgpaResultSection');
+    const messageDiv = document.getElementById('cgpaMessage');
+    
+    // Validation
+    if (semestersPassed === 10) {
+        resultSection.style.display = 'none';
+        messageDiv.style.display = 'block';
+        if (targetCGPA > currentCGPA) {
+            messageDiv.textContent = 'Target cannot be changed because all semesters are completed.';
+        } else {
+            messageDiv.textContent = 'All semesters completed.';
+        }
+        return;
+    }
+    
+    // Hide message, show results
+    messageDiv.style.display = 'none';
+    resultSection.style.display = 'flex';
+    
+    const remainingSemesters = 10 - semestersPassed;
+    
+    // Formula: (Target × 10 - Current × Passed) / Remaining
+    const numerator = (targetCGPA * 10) - (currentCGPA * semestersPassed);
+    let requiredAverage = numerator / remainingSemesters;
+    
+    // Handle edge cases
+    if (!isFinite(requiredAverage) || isNaN(requiredAverage)) {
+        requiredAverage = 0;
+    }
+    
+    // Update main result
+    document.getElementById('requiredAverageSGPA').textContent = requiredAverage.toFixed(2);
+    
+    // Update analysis
+    document.getElementById('analysisCurrentCGPA').textContent = currentCGPA.toFixed(2);
+    document.getElementById('analysisTargetCGPA').textContent = targetCGPA.toFixed(2);
+    document.getElementById('analysisSemestersCompleted').textContent = `${semestersPassed} / 10`;
+    document.getElementById('analysisRemaining').textContent = `${remainingSemesters} semester${remainingSemesters === 1 ? '' : 's'}`;
+    
+    // Status text
+    const statusEl = document.getElementById('cgpaStatusText');
+    if (currentCGPA >= targetCGPA && targetCGPA > 0) {
+        statusEl.textContent = 'Target already achieved ✓';
+        statusEl.style.color = 'var(--green)';
+    } else if (requiredAverage > 10) {
+        statusEl.textContent = 'Target is mathematically impossible because the maximum SGPA is 10.';
+        statusEl.style.color = 'var(--amber)';
+    } else if (requiredAverage <= 7.0) {
+        statusEl.textContent = 'Comfortable target — you have a good margin.';
+        statusEl.style.color = 'var(--green)';
+    } else if (requiredAverage <= 8.0) {
+        statusEl.textContent = 'Achievable target — consistent performance should be enough.';
+        statusEl.style.color = 'var(--ink-soft)';
+    } else if (requiredAverage <= 9.0) {
+        statusEl.textContent = 'Challenging target — you\'ll need strong and consistent semesters.';
+        statusEl.style.color = 'var(--amber)';
+    } else if (requiredAverage <= 10.0) {
+        statusEl.textContent = 'Very challenging target — you\'ll need excellent performance.';
+        statusEl.style.color = 'var(--amber)';
+    } else {
+        statusEl.textContent = '';
+    }
+    
+    // Quick insight
+    const margin = requiredAverage - targetCGPA;
+    document.getElementById('insightTarget').textContent = targetCGPA.toFixed(2);
+    document.getElementById('insightNeed').textContent = requiredAverage.toFixed(2) + ' average';
+    
+    const marginEl = document.getElementById('insightMargin');
+    if (margin >= 0) {
+        marginEl.textContent = '+' + margin.toFixed(2) + ' above target';
+        marginEl.style.color = margin > 2 ? 'var(--amber)' : 'var(--green)';
+    } else {
+        marginEl.textContent = margin.toFixed(2) + ' below target';
+        marginEl.style.color = 'var(--green)';
+    }
+}
 
 function renderCGPA() {
     renderSemesters();
