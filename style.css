@@ -937,6 +937,50 @@ button {
 
 .modal-body { padding: 30px; overflow-y: auto; display: flex; flex-direction: column; gap: 24px; }
 
+/* CGPA Simple Calculator Styles */
+.cgpa-simple-modal .modal-body { padding: 24px; }
+.cgpa-inputs { display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px; }
+.cgpa-input-group { display: flex; flex-direction: column; gap: 6px; }
+.cgpa-input-group label { font-family: var(--font-mono); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-soft); }
+.cgpa-simple-input, .cgpa-simple-select {
+  height: 44px; padding: 0 16px; border: 1px solid var(--glass-border);
+  border-radius: 12px; background: var(--paper-card); color: var(--ink);
+  font-family: inherit; font-size: 14px; font-weight: 500;
+}
+.cgpa-simple-input:focus, .cgpa-simple-select:focus { border-color: var(--green); outline: none; box-shadow: 0 0 0 3px var(--green-tint); }
+.cgpa-simple-select { cursor: pointer; }
+
+.cgpa-result-section { display: flex; flex-direction: column; gap: 16px; animation: fadeInScale 0.35s ease-out; }
+@keyframes fadeInScale { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+.cgpa-main-result {
+  text-align: center; padding: 24px; background: linear-gradient(135deg, var(--green-tint), var(--green-tint-strong));
+  border: 1px solid var(--green-tint-strong); border-radius: 16px;
+}
+.cgpa-result-value { font-family: var(--font-display); font-size: 48px; font-style: italic; color: var(--green); line-height: 1; }
+.cgpa-result-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; color: var(--ink-soft); margin-top: 8px; }
+
+.cgpa-analysis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.analysis-row { display: flex; flex-direction: column; gap: 4px; padding: 12px; background: var(--paper-card); border-radius: 10px; border: 1px solid var(--border); }
+.analysis-label { font-family: var(--font-mono); font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-faint); }
+.analysis-value { font-family: var(--font-display); font-size: 18px; font-style: italic; color: var(--ink); }
+
+.cgpa-status-text {
+  padding: 14px 16px; background: var(--paper-card); border-radius: 12px;
+  font-size: 13px; font-weight: 500; color: var(--ink-soft); text-align: center;
+  border: 1px solid var(--border);
+}
+
+.cgpa-quick-insight { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.insight-item { text-align: center; padding: 14px 10px; background: var(--card); border: 1px solid var(--glass-border); border-radius: 12px; }
+.insight-label { font-family: var(--font-mono); font-size: 8.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--ink-faint); margin-bottom: 6px; }
+.insight-value { font-family: var(--font-display); font-size: 16px; font-style: italic; color: var(--green); }
+
+.cgpa-message {
+  padding: 14px 16px; background: var(--amber-tint); border: 1px solid rgba(193,93,19,.2);
+  border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--amber); text-align: center;
+}
+
 /* CGPA Target Section */
 .cgpa-target {
   background: var(--card); border: 1px solid var(--glass-border);
@@ -1183,6 +1227,10 @@ button {
   .subj-selects { width: 100%; }
   .cgpa-select { flex: 1; }
   .modal-header h2 { font-size: 24px; }
+  
+  .cgpa-analysis { grid-template-columns: 1fr; }
+  .cgpa-quick-insight { grid-template-columns: 1fr; }
+  .cgpa-result-value { font-size: 36px; }
 }
 
 @media (max-width: 380px) {
